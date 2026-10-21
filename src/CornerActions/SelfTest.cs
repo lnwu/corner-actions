@@ -141,6 +141,15 @@ internal static class SelfTest
             Check("embedded app icon loads", icon.Width >= 16 && icon.Height >= 16);
         }
 
+        // The tray menu must keep its full set of entries, separators included.
+        var menu = TrayMenu.Build(new AppConfig(), new Strings("en"), autoStartEnabled: false);
+        Check("tray menu builds", menu != IntPtr.Zero);
+        if (menu != IntPtr.Zero)
+        {
+            Check("tray menu item count", NativeMethods.GetMenuItemCount(menu) == TrayMenu.ItemCount);
+            NativeMethods.DestroyMenu(menu);
+        }
+
         // Corner size never collapses to zero, even for a 1 DIP configuration.
         Check("corner size clamps to 2 px", MonitorLayout.CornerSizePx(m, 1) == 2);
 

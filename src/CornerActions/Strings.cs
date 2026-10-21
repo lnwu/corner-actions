@@ -30,15 +30,13 @@ internal sealed class Strings
 
     internal string MenuEnabled => T("Enabled", "启用");
 
-    internal string MenuCornerHeader => T("Hover action: display off", "悬停动作：关闭屏幕");
+    internal string MenuTopLeft => T("Top-left corner → display off", "左上角 → 关闭屏幕");
 
-    internal string MenuTopLeft => T("Top-left corner", "左上角");
-
-    internal string MenuTopRight => T("Top-right corner", "右上角");
+    internal string MenuTopRight => T("Top-right corner → display off", "右上角 → 关闭屏幕");
 
     internal string MenuStartWithWindows => T("Start with Windows", "开机自启");
 
-    internal string MenuOpenConfig => T("Open configuration file", "打开配置文件");
+    internal string MenuOpenConfig => T("Open configuration file…", "打开配置文件…");
 
     internal string MenuReloadConfig => T("Reload configuration", "重载配置");
 

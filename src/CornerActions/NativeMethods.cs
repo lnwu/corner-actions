@@ -16,6 +16,17 @@ internal static class NativeMethods
 
     internal const uint SMTO_ABORTIFHUNG = 0x0002;
 
+    internal const uint MF_STRING = 0x0000;
+    internal const uint MF_SEPARATOR = 0x0800;
+    internal const uint MF_CHECKED = 0x0008;
+    internal const uint MF_GRAYED = 0x0001;
+
+    internal const uint TPM_RIGHTBUTTON = 0x0002;
+    internal const uint TPM_NONOTIFY = 0x0080;
+    internal const uint TPM_RETURNCMD = 0x0100;
+
+    internal const int WM_NULL = 0x0000;
+
     internal const int VK_LBUTTON = 0x01;
     internal const int VK_RBUTTON = 0x02;
     internal const int VK_MBUTTON = 0x04;
@@ -107,4 +118,28 @@ internal static class NativeMethods
 
     [DllImport("user32.dll")]
     internal static extern int GetSystemMetrics(int nIndex);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern IntPtr CreatePopupMenu();
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool AppendMenuW(IntPtr hMenu, uint uFlags, IntPtr uIDNewItem, string? lpNewItem);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool DestroyMenu(IntPtr hMenu);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern int GetMenuItemCount(IntPtr hMenu);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern int TrackPopupMenuEx(IntPtr hMenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool PostMessageW(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 }

@@ -64,9 +64,7 @@ internal sealed class TrayAppContext : ApplicationContext
             Text = _strings.TooltipEnabled,
         };
 
-        var menu = new ContextMenuStrip();
-        menu.Opening += (_, _) => RebuildMenu();
-        _icon.ContextMenuStrip = menu;
+        _icon.MouseUp += OnIconMouseUp;
         _icon.DoubleClick += (_, _) => ToggleEnabled();
 
         _messageWindow = new MessageWindow();
@@ -261,52 +259,38 @@ internal sealed class TrayAppContext : ApplicationContext
         _icon.Text = _config.Enabled ? _strings.TooltipEnabled : _strings.TooltipDisabled;
     }
 
-    private void RebuildMenu()
+    private void OnIconMouseUp(object? sender, MouseEventArgs e)
     {
-        var menu = _icon.ContextMenuStrip;
-        if (menu is null)
+        if (e.Button != MouseButtons.Right)
         {
             return;
         }
 
-        menu.Items.Clear();
-
-        var enabled = new ToolStripMenuItem(_strings.MenuEnabled) { Checked = _config.Enabled };
-        enabled.Click += (_, _) => ToggleEnabled();
-        menu.Items.Add(enabled);
-
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add(new ToolStripMenuItem(_strings.MenuCornerHeader) { Enabled = false });
-
-        var topLeft = new ToolStripMenuItem(_strings.MenuTopLeft) { Checked = _config.TopLeft };
-        topLeft.Click += (_, _) => ToggleCorner(HotCorner.TopLeft);
-        menu.Items.Add(topLeft);
-
-        var topRight = new ToolStripMenuItem(_strings.MenuTopRight) { Checked = _config.TopRight };
-        topRight.Click += (_, _) => ToggleCorner(HotCorner.TopRight);
-        menu.Items.Add(topRight);
-
-        menu.Items.Add(new ToolStripSeparator());
-
-        var autoStart = new ToolStripMenuItem(_strings.MenuStartWithWindows) { Checked = AutoStart.IsEnabled };
-        autoStart.Click += (_, _) => AutoStart.Set(!AutoStart.IsEnabled);
-        menu.Items.Add(autoStart);
-
-        menu.Items.Add(new ToolStripSeparator());
-
-        var openConfig = new ToolStripMenuItem(_strings.MenuOpenConfig);
-        openConfig.Click += (_, _) => OpenConfigFile();
-        menu.Items.Add(openConfig);
-
-        var reload = new ToolStripMenuItem(_strings.MenuReloadConfig);
-        reload.Click += (_, _) => ReloadConfig();
-        menu.Items.Add(reload);
-
-        menu.Items.Add(new ToolStripSeparator());
-
-        var exit = new ToolStripMenuItem(_strings.MenuExit);
-        exit.Click += (_, _) => ExitThread();
-        menu.Items.Add(exit);
+        var command = TrayMenu.Show(_messageWindow.Handle, _config, _strings, AutoStart.IsEnabled);
+        switch (command)
+        {
+            case TrayCommand.ToggleEnabled:
+                ToggleEnabled();
+                break;
+            case TrayCommand.ToggleTopLeft:
+                ToggleCorner(HotCorner.TopLeft);
+                break;
+            case TrayCommand.ToggleTopRight:
+                ToggleCorner(HotCorner.TopRight);
+                break;
+            case TrayCommand.ToggleAutoStart:
+                AutoStart.Set(!AutoStart.IsEnabled);
+                break;
+            case TrayCommand.OpenConfig:
+                OpenConfigFile();
+                break;
+            case TrayCommand.ReloadConfig:
+                ReloadConfig();
+                break;
+            case TrayCommand.Exit:
+                ExitThread();
+                break;
+        }
     }
 
     private void ToggleCorner(HotCorner corner)

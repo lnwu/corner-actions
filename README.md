@@ -53,14 +53,16 @@ The first run creates:
 Move the pointer into the top-left or top-right corner of the primary monitor
 and keep it there for 300 ms. The display turns off.
 
-The tray menu is in the Windows display language (Chinese or English, English
-otherwise) and contains:
+The tray menu is a real Windows popup menu, so it uses the system font, metrics
+and selection colours instead of WinForms' own chrome. It is written in the
+Windows display language (Chinese or English, English otherwise) and contains:
 
 - **Enabled** — pause or resume the feature. Double-clicking the tray icon does
   the same.
-- **Top-left corner** / **Top-right corner** — enable one corner, both, or neither.
+- **Top-left corner → display off** / **Top-right corner → display off** — enable
+  one corner, both, or neither.
 - **Start with Windows**
-- **Open configuration file** / **Reload configuration**
+- **Open configuration file…** / **Reload configuration**
 - **Exit**
 
 ## Configuration

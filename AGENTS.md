@@ -27,7 +27,8 @@ stops the running instance first, because Windows locks a running executable.
 | `Program.cs` | Entry point, console attachment, single instance, mode dispatch |
 | `AppIcon.cs` | Loads the tray icon from the embedded `assets/app.ico` |
 | `StartupOptions.cs` | `--selftest`, `--e2e`, `--dry-run`, `--verbose`, `--help` |
-| `TrayAppContext.cs` | Tray icon, menu, 50 ms polling loop, monitor cache, session guards |
+| `TrayAppContext.cs` | Tray icon, 50 ms polling loop, monitor cache, session guards |
+| `TrayMenu.cs` | Win32 popup menu: builds the `HMENU` and runs `TrackPopupMenuEx` |
 | `CornerDetector.cs` | Pure dwell / hysteresis / cooldown state machine |
 | `MonitorLayout.cs` | `EnumDisplayMonitors` enumeration, scope filter, DPI scaling |
 | `SessionState.cs` | Locked / full-screen / presentation guard, mouse-button guard |
@@ -99,6 +100,12 @@ turns off their screen.
 - `GetDpiForMonitor` is documented as "not DPI aware"; it still reports the real
   per-monitor DPI for a `PerMonitorV2` process, which is why it is used here:
   <https://learn.microsoft.com/windows/win32/api/shellscalingapi/nf-shellscalingapi-getdpiformonitor>
+- The tray menu is a Win32 `HMENU`, not a `ContextMenuStrip`: ToolStrip paints its
+  own Office-era chrome and ignores the shell's theme. `SetForegroundWindow`
+  before and `PostMessage(WM_NULL)` after are not optional - without them the menu
+  does not dismiss when the user clicks elsewhere. `TPM_RETURNCMD` makes the call
+  synchronous, so the chosen id comes straight back and no `WM_COMMAND` plumbing
+  is needed.
 - The `Run` value is a command line limited to 260 characters and may be started
   late by the system: <https://learn.microsoft.com/windows/win32/setupapi/run-and-runonce-registry-keys>
 
