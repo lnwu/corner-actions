@@ -123,7 +123,7 @@ Framework dependent build (what ships in `dist/`, ~200 KB):
 .\build.ps1
 ```
 
-Portable build with the runtime bundled (~65 MB, extracted to `%TEMP%\.net` on
+Portable build with the runtime bundled (~47 MB, extracted to `%TEMP%\.net` on
 first launch, slightly slower start):
 
 ```powershell

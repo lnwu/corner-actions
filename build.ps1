@@ -5,7 +5,7 @@
 .DESCRIPTION
     The default build is framework dependent: about 200 KB and it needs the
     .NET 10 Desktop Runtime on the target machine. Use -SelfContained for a
-    portable single file that bundles the runtime (about 65 MB after
+    portable single file that bundles the runtime (about 47 MB after
     compression, extracted to %TEMP%\.net on first launch).
 
 .EXAMPLE

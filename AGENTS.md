@@ -16,7 +16,7 @@ dotnet publish src/CornerActions/CornerActions.csproj -c Release -o dist   # ~20
 ```
 
 On Windows, `.\build.ps1` does the same and `.\build.ps1 -SelfContained` bundles
-the runtime (~65 MB).
+the runtime (~47 MB).
 
 ## Layout
 
