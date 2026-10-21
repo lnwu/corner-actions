@@ -111,5 +111,6 @@ turns off their screen.
 
 ## Open questions
 
-- The live `SC_MONITORPOWER` path has not been exercised on hardware yet; every
-  automated run used `--dry-run`.
+- Dark mode for the tray menu would need the undocumented `SetPreferredAppMode`
+  (uxtheme ordinal 135) or `SetWindowCompositionAttribute`. The owner runs the
+  light theme, so nothing here has been tested in dark mode.
