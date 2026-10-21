@@ -48,6 +48,11 @@ the runtime (~47 MB).
   the primary display DPI changes) and on `DisplaySettingsChanged`.
 - Session guards run before detection. On a locked desktop `GetCursorPos` can
   fail; treat failure as "skip this tick", not as "no corner".
+- `SessionState` suppresses on `QUNS_NOT_PRESENT`, `QUNS_PRESENTATION_MODE` and
+  `QUNS_RUNNING_D3D_FULL_SCREEN`, but deliberately not on `QUNS_BUSY`: that value
+  also covers ordinary full-screen windows, and a full-screen terminal or video
+  player is where a user actually reaches for the corner. Decided after a live
+  test with a full-screen Windows Terminal.
 - The action is one broadcast of `SC_MONITORPOWER=2` with a 1 s timeout. Log a
   failure and move on; never retry in a loop.
 - Logging must never throw into the caller, and must stay in English.
@@ -65,9 +70,10 @@ the runtime (~47 MB).
 | `--dry-run` | Shows a tray icon, logs only | Manual checks; never switches the display off |
 | `--e2e` | **Moves the real pointer for ~2.5 s** | Ask the human before running it on their machine |
 
-`--e2e` also fails when the session reports `QUNS_BUSY` (a full-screen app or
-presentation is active), because the app suppresses actions there. Read the log
-line `e2e start ... quns=N` before blaming detection.
+`--e2e` also fails when the session reports `QUNS_NOT_PRESENT`,
+`QUNS_PRESENTATION_MODE` or `QUNS_RUNNING_D3D_FULL_SCREEN`, because the app
+suppresses actions there. Read the log line `e2e start ... quns=N` before blaming
+detection; `quns=2` (an ordinary full-screen window) no longer blocks anything.
 
 Never run a live (non `--dry-run`) trigger while someone is using the machine: it
 turns off their screen.
@@ -92,5 +98,5 @@ turns off their screen.
 
 ## Open questions
 
-- The `QUNS_BUSY` guard also covers full-screen games and videos. Whether that is
-  too aggressive for a hot-corner tool is still being decided.
+- The live `SC_MONITORPOWER` path has not been exercised on hardware yet; every
+  automated run used `--dry-run`.

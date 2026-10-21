@@ -85,7 +85,7 @@ time a setting changes.
 | Pointer polling | 50 ms | Tight enough for the dwell measurement, no measurable CPU cost |
 | Cooldown after firing | 2 s | The next mouse movement wakes the display; a second trigger would fight the user |
 | Re-arm distance | 4 px past the corner | Stops a parked pointer from firing repeatedly |
-| Locked desktop / full screen / presentation | suppressed | The display must not turn off over a game, a video, or a UAC prompt |
+| Locked desktop / presentation / exclusive full-screen game | suppressed | The display must not turn off over a UAC prompt, a presentation, or an exclusive Direct3D app. Ordinary full-screen windows (a video player, a full-screen terminal) do not block it |
 
 ## How it works
 
@@ -108,8 +108,9 @@ time a setting changes.
 ## Known limitations
 
 - Only the top-left and top-right corners, and only one action (display off).
-- While a full-screen app, a presentation, or the lock screen is active, the
-  corner does nothing. This is intentional.
+- While a presentation, an exclusive full-screen Direct3D game, or the lock
+  screen is active, the corner does nothing. Ordinary full-screen windows do not
+  block it.
 - A top-positioned taskbar overlaps both corners and makes them hard to reach.
 - Turning the display off does not lock the session.
 - On multi-monitor setups only the primary monitor is used unless `monitors` is
@@ -163,8 +164,8 @@ Check `%LOCALAPPDATA%\CornerActions\corner-actions.log`. A trigger looks like:
 2026-10-21T16:32:09.934Z INFO trigger corner=top-left action=monitor-off result=ok
 ```
 
-If the log shows `suppressed session=True`, a full-screen app, presentation mode
-or the lock screen was active.
+If the log shows `suppressed session=True`, a presentation, an exclusive
+full-screen game, or the lock screen was active.
 
 ## License
 
