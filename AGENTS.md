@@ -12,17 +12,20 @@ restored on Linux and macOS).
 
 ```bash
 dotnet build src/CornerActions/CornerActions.csproj
-dotnet publish src/CornerActions/CornerActions.csproj -c Release -o dist   # ~200 KB, needs .NET 10 Desktop Runtime
+dotnet publish src/CornerActions/CornerActions.csproj -c Release -o dist   # ~540 KB, needs .NET 10 Desktop Runtime
 ```
 
 On Windows, `.\build.ps1` does the same and `.\build.ps1 -SelfContained` bundles
-the runtime (~47 MB).
+the runtime (~47 MB). `scripts\deploy.ps1` then installs the result to
+`%LOCALAPPDATA%\Programs\CornerActions` and refreshes the desktop shortcut; it
+stops the running instance first, because Windows locks a running executable.
 
 ## Layout
 
 | File | Responsibility |
 | --- | --- |
 | `Program.cs` | Entry point, console attachment, single instance, mode dispatch |
+| `AppIcon.cs` | Loads the tray icon from the embedded `assets/app.ico` |
 | `StartupOptions.cs` | `--selftest`, `--e2e`, `--dry-run`, `--verbose`, `--help` |
 | `TrayAppContext.cs` | Tray icon, menu, 50 ms polling loop, monitor cache, session guards |
 | `CornerDetector.cs` | Pure dwell / hysteresis / cooldown state machine |
@@ -36,6 +39,9 @@ the runtime (~47 MB).
 | `MessageWindow.cs` | Hidden window for `TaskbarCreated` |
 | `SelfTest.cs` | Assertions over `CornerDetector` |
 | `E2ERunner.cs` | Dry-run drive of the real app with a parked pointer |
+| `scripts/deploy.ps1` | Installs the published exe to `%LOCALAPPDATA%` and refreshes the desktop shortcut |
+| `scripts/make-icon.ps1` | Regenerates `assets/app.ico` (only when the artwork changes) |
+| `assets/app.ico` | The one copy of the artwork: exe icon and tray icon |
 
 ## Invariants
 

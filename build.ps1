@@ -3,7 +3,7 @@
     Publishes CornerActions.exe into dist/.
 
 .DESCRIPTION
-    The default build is framework dependent: about 200 KB and it needs the
+    The default build is framework dependent: about 540 KB and it needs the
     .NET 10 Desktop Runtime on the target machine. Use -SelfContained for a
     portable single file that bundles the runtime (about 47 MB after
     compression, extracted to %TEMP%\.net on first launch).

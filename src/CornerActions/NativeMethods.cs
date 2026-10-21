@@ -27,6 +27,9 @@ internal static class NativeMethods
 
     internal const int ATTACH_PARENT_PROCESS = -1;
 
+    /// <summary>SM_CXSMICON: the size of a small shell icon, DPI dependent.</summary>
+    internal const int SM_CXSMICON = 49;
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct POINT
     {
@@ -102,7 +105,6 @@ internal static class NativeMethods
     [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern uint RegisterWindowMessage(string lpString);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool DestroyIcon(IntPtr hIcon);
+    [DllImport("user32.dll")]
+    internal static extern int GetSystemMetrics(int nIndex);
 }

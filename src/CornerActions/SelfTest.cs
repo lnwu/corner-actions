@@ -1,8 +1,8 @@
 namespace CornerActions;
 
 /// <summary>
-/// Built-in checks for the corner logic. Runs without a desktop session, touches
-/// no Win32 API, and returns 0 only when every check passes.
+/// Built-in checks for the corner logic and the embedded artwork. Needs no desktop
+/// session and no input devices, and returns 0 only when every check passes.
 /// </summary>
 internal static class SelfTest
 {
@@ -133,6 +133,13 @@ internal static class SelfTest
         Check("forced zh resolves to zh", zhStrings.Code == "zh" && enStrings.Code == "en");
         Check("forced languages have different menu text",
             zhStrings.MenuEnabled != enStrings.MenuEnabled);
+
+        // The tray icon is loaded from the embedded copy of assets/app.ico; a wrong
+        // LogicalName would only show up as a missing icon at runtime.
+        using (var icon = AppIcon.Load())
+        {
+            Check("embedded app icon loads", icon.Width >= 16 && icon.Height >= 16);
+        }
 
         // Corner size never collapses to zero, even for a 1 DIP configuration.
         Check("corner size clamps to 2 px", MonitorLayout.CornerSizePx(m, 1) == 2);

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
@@ -33,7 +32,6 @@ internal sealed class TrayAppContext : ApplicationContext
     private readonly System.Windows.Forms.Timer _timer;
     private readonly MessageWindow _messageWindow;
     private readonly Icon _trayIcon;
-    private readonly IntPtr _trayIconHandle;
 
     private AppConfig _config;
     private Strings _strings;
@@ -58,7 +56,7 @@ internal sealed class TrayAppContext : ApplicationContext
         _strings = new Strings(config);
         _detector = CreateDetector(config);
 
-        _trayIcon = CreateTrayIcon(out _trayIconHandle);
+        _trayIcon = AppIcon.Load();
         _icon = new NotifyIcon
         {
             Icon = _trayIcon,
@@ -113,10 +111,6 @@ internal sealed class TrayAppContext : ApplicationContext
             _icon.Visible = false;
             _icon.Dispose();
             _trayIcon.Dispose();
-            if (_trayIconHandle != IntPtr.Zero)
-            {
-                NativeMethods.DestroyIcon(_trayIconHandle);
-            }
 
             Log.Info($"stopped triggers={_triggerCount}");
         }
@@ -368,39 +362,4 @@ internal sealed class TrayAppContext : ApplicationContext
         HotCorner.TopRight => "top-right",
         _ => "none",
     };
-
-    private static Icon CreateTrayIcon(out IntPtr handle)
-    {
-        using var bitmap = new Bitmap(32, 32);
-        using (var graphics = Graphics.FromImage(bitmap))
-        {
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.Clear(Color.Transparent);
-
-            using var background = new SolidBrush(Color.FromArgb(255, 250, 250, 250));
-            using var border = new Pen(Color.FromArgb(255, 70, 70, 70), 1.5f);
-            using var outline = RoundedRectangle(new RectangleF(1.25f, 1.25f, 29.5f, 29.5f), 7f);
-            graphics.FillPath(background, outline);
-            graphics.DrawPath(border, outline);
-
-            using var accent = new SolidBrush(Color.FromArgb(255, 0, 120, 212));
-            graphics.FillPolygon(accent, [new PointF(5f, 5f), new PointF(15f, 5f), new PointF(5f, 15f)]);
-            graphics.FillPolygon(accent, [new PointF(27f, 5f), new PointF(17f, 5f), new PointF(27f, 15f)]);
-        }
-
-        handle = bitmap.GetHicon();
-        return Icon.FromHandle(handle);
-    }
-
-    private static GraphicsPath RoundedRectangle(RectangleF bounds, float radius)
-    {
-        var diameter = radius * 2;
-        var path = new GraphicsPath();
-        path.AddArc(bounds.Left, bounds.Top, diameter, diameter, 180, 90);
-        path.AddArc(bounds.Right - diameter, bounds.Top, diameter, diameter, 270, 90);
-        path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
-        path.AddArc(bounds.Left, bounds.Bottom - diameter, diameter, diameter, 90, 90);
-        path.CloseFigure();
-        return path;
-    }
 }

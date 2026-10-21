@@ -19,13 +19,27 @@ winget install Microsoft.DotNet.DesktopRuntime.10
 
 ## Install and run
 
-There is no prebuilt release yet: build the executable first (see
-[Development](#development)); the published file is `dist/CornerActions.exe`.
+There is no installer and no updater. `scripts\deploy.ps1` copies the published
+executable into a fixed per-user folder and points a desktop shortcut at it:
 
-1. Copy `CornerActions.exe` anywhere you like.
-2. Double-click it. A tray icon appears and the feature is on immediately.
-3. Optional: right-click the tray icon and enable **Start with Windows**
-   (writes `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, no elevation).
+```powershell
+.\build.ps1
+powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1
+```
+
+| Path | Purpose |
+| --- | --- |
+| `%LOCALAPPDATA%\Programs\CornerActions\CornerActions.exe` | The program |
+| Desktop shortcut `Corner Actions` | Starts the program |
+
+Double-click the shortcut: a tray icon appears and the feature is on immediately.
+Optional: right-click the tray icon and enable **Start with Windows** (writes
+`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, no elevation).
+
+Updating is the same script again. It stops the running copy, overwrites the
+executable and refreshes the shortcut; the install path never changes, so the
+shortcut and the startup entry stay valid. Add `-Restart` to start it again
+afterwards.
 
 The first run creates:
 
@@ -118,7 +132,7 @@ time a setting changes.
 
 ## Development
 
-Framework dependent build (what ships in `dist/`, ~200 KB):
+Framework dependent build (what ships in `dist/`, ~540 KB):
 
 ```powershell
 .\build.ps1
