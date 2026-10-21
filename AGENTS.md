@@ -7,6 +7,8 @@ Tray-only Windows app: rest the pointer in a top corner and the display turns of
 
 The project targets `net10.0-windows` and builds from any OS with the .NET 10 SDK
 (`EnableWindowsTargeting` restores the Windows targeting packs on Linux and macOS).
+`global.json` asks for 10.0.100 with `rollForward: latestFeature`, so any .NET 10
+SDK works and .NET 9 or older is rejected on purpose.
 
 ```bash
 dotnet build src/CornerActions/CornerActions.csproj
@@ -31,6 +33,8 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 | File | Responsibility |
 | --- | --- |
 | `Program.cs` | Entry point, console attachment, single instance, mode dispatch |
+| `SingleInstance.cs` | Per-session mutex that keeps a second copy from starting |
+| `NativeMethods.cs` | Every P/Invoke the app uses, and nothing else |
 | `AppIcon.cs` | Loads the tray icon from the embedded `assets/app.ico` |
 | `StartupOptions.cs` | `--selftest`, `--e2e`, `--dry-run`, `--verbose`, `--help` |
 | `TrayAppContext.cs` | Tray icon, 50 ms polling loop, monitor cache, session guards |
