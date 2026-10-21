@@ -44,15 +44,23 @@ internal static class Log
 
                 File.AppendAllText(FilePath, line + Environment.NewLine);
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            catch (Exception)
             {
-                // Nothing useful left to do; the file system refused the write.
+                // A logger must be total: a full disk, a read-only profile or a
+                // vanished directory must not take the tray app down.
             }
         }
 
         if (EchoToConsole)
         {
-            Console.WriteLine(line);
+            try
+            {
+                Console.WriteLine(line);
+            }
+            catch (IOException)
+            {
+                // The terminal was closed while the app was logging to it.
+            }
         }
     }
 }

@@ -124,6 +124,16 @@ internal static class SelfTest
         Check("negative coordinates fires",
             detector.Evaluate(leftOfPrimary, true, true, -1919, 1, 300) == HotCorner.TopLeft);
 
+        // UI language: Chinese for any Chinese locale, English otherwise.
+        Check("zh-CN id is Chinese", Strings.IsChineseUiLanguage(0x0804));
+        Check("zh-TW id is Chinese", Strings.IsChineseUiLanguage(0x0404));
+        Check("en-US id is not Chinese", !Strings.IsChineseUiLanguage(0x0409));
+        var zhStrings = new Strings("zh");
+        var enStrings = new Strings("en");
+        Check("forced zh resolves to zh", zhStrings.Code == "zh" && enStrings.Code == "en");
+        Check("forced languages have different menu text",
+            zhStrings.MenuEnabled != enStrings.MenuEnabled);
+
         // Corner size never collapses to zero, even for a 1 DIP configuration.
         Check("corner size clamps to 2 px", MonitorLayout.CornerSizePx(m, 1) == 2);
 

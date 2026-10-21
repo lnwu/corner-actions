@@ -23,6 +23,9 @@ internal sealed class Strings
         };
     }
 
+    /// <summary>Resolved UI language, for the startup log.</summary>
+    internal string Code => _chinese ? "zh" : "en";
+
     internal string AppName => T("Corner Actions", "角落动作");
 
     internal string MenuEnabled => T("Enabled", "启用");
@@ -50,7 +53,7 @@ internal sealed class Strings
         "无法打开配置文件，详情见日志。");
 
     /// <summary>Chinese (Simplified, Traditional, Hong Kong, Singapore).</summary>
-    private static bool IsChineseUiLanguage(uint languageId) => (languageId & 0x3FF) == 0x04;
+    internal static bool IsChineseUiLanguage(uint languageId) => (languageId & 0x3FF) == 0x04;
 
     private string T(string english, string chinese) => _chinese ? chinese : english;
 }

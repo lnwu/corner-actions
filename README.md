@@ -19,6 +19,9 @@ winget install Microsoft.DotNet.DesktopRuntime.10
 
 ## Install and run
 
+There is no prebuilt release yet: build the executable first (see
+[Development](#development)); the published file is `dist/CornerActions.exe`.
+
 1. Copy `CornerActions.exe` anywhere you like.
 2. Double-click it. A tray icon appears and the feature is on immediately.
 3. Optional: right-click the tray icon and enable **Start with Windows**
@@ -72,7 +75,8 @@ otherwise) and contains:
 | `topLeft`, `topRight` | `true`, `false` | Per-corner switches |
 
 Values outside these ranges are clamped on load. A malformed file is logged and
-ignored; the app keeps running with defaults and does not overwrite your file.
+ignored; the app keeps running with defaults, and the file is rewritten the next
+time a setting changes.
 
 ### Deliberately not configurable
 
@@ -97,8 +101,9 @@ ignored; the app keeps running with defaults and does not overwrite your file.
   from one hover.
 - The action is the documented system command: `WM_SYSCOMMAND` with
   `SC_MONITORPOWER` and `lParam = 2`, broadcast to top-level windows.
-- `TaskbarCreated` (also sent when the primary display DPI changes) and
-  `DisplaySettingsChanged` rebuild the monitor cache and re-add the tray icon.
+- `TaskbarCreated` (also sent when the primary display DPI changes) rebuilds the
+  monitor cache and re-adds the tray icon. `DisplaySettingsChanged` schedules the
+  same rebuild for the next poll.
 
 ## Known limitations
 
@@ -147,7 +152,8 @@ CornerActions.exe --e2e
 CornerActions.exe --dry-run --verbose
 ```
 
-Exit code 0 means pass. `--help` lists the switches.
+Exit code 0 means pass. `--help` lists the switches; run it from a terminal, since
+a windowless app has nowhere else to print.
 
 ## Troubleshooting
 

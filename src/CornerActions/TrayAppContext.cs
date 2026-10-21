@@ -87,7 +87,7 @@ internal sealed class TrayAppContext : ApplicationContext
             $"started enabled={_config.Enabled} scope={_config.Monitors} " +
             $"cornerSizeDips={_config.CornerSizeDips} dwellMs={_config.DwellMilliseconds} " +
             $"topLeft={_config.TopLeft} topRight={_config.TopRight} " +
-            $"mode={(_options.DryRun ? "dry-run" : "live")} monitors={_monitors.Count}");
+            $"mode={(_options.DryRun ? "dry-run" : "live")} lang={_strings.Code} monitors={_monitors.Count}");
     }
 
     /// <summary>Raised for every action, after the display command was attempted.</summary>
