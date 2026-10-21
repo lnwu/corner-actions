@@ -63,8 +63,8 @@ are fixed on purpose.
 ## 🗑️ Uninstall
 
 Quit from the tray menu, turn **Start with Windows** off, then delete
-`%LOCALAPPDATA%\Programs\CornerActions`, the desktop shortcut and
-`%APPDATA%\CornerActions`.
+`%LOCALAPPDATA%\Programs\CornerActions`, the desktop shortcut,
+`%APPDATA%\CornerActions` (settings) and `%LOCALAPPDATA%\CornerActions` (log).
 
 ## 📄 License
 
