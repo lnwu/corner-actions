@@ -13,9 +13,11 @@ corner of the screen and the display turns off.
 
 ## 📦 Install
 
-Windows 10 or 11, x64, with the
+Windows 10 or 11, x64. Running it needs the
 [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
-(`winget install Microsoft.DotNet.DesktopRuntime.10`).
+(`winget install Microsoft.DotNet.DesktopRuntime.10`); building it also needs the
+[.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+(`winget install Microsoft.DotNet.SDK.10`).
 
 No release yet, so build it once:
 
@@ -41,7 +43,7 @@ Actions** desktop shortcut. Updating is the same `deploy.ps1` again.
 | Key | Default | Notes |
 | --- | --- | --- |
 | `language` | `"auto"` | `auto`, `en`, `zh` |
-| `enabled` | `true` | same as the tray checkbox |
+| `enabled` | `true` | same as the **Enabled** item in the tray menu |
 | `monitors` | `"primary"` | `primary` or `all` |
 | `cornerSizeDips` | `4` | 1–64, scaled by monitor DPI |
 | `dwellMilliseconds` | `300` | 0–5000 |
@@ -52,7 +54,8 @@ are fixed on purpose.
 
 ## 💡 Good to know
 
-- A taskbar at the top of the screen covers both corners.
+- Detection is positional, not window-aware: with the taskbar at the top,
+  resting the pointer on the Start button also turns the display off.
 - With several monitors, only the primary one has hot corners unless `monitors`
   is `all`.
 - Log: `%LOCALAPPDATA%\CornerActions\corner-actions.log`.

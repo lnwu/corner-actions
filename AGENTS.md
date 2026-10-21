@@ -86,8 +86,9 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 - The action is one broadcast of `SC_MONITORPOWER=2` with a 1 s timeout. Log a
   failure and move on; never retry in a loop.
 - Logging must never throw into the caller, and must stay in English.
-- Log lines are `{utc} {LEVEL} key=value ...`, lowercase keys, no sentences that
-  only a human can parse: `trigger corner=top-left action=monitor-off result=ok`,
+- Log lines are `{utc} {LEVEL} key=value ...` with lowercase keys; free text is
+  quoted and only used where a key cannot carry the meaning:
+  `trigger corner=top-left action=monitor-off result=ok`,
   `suppressed session=True mouseDown=False`, `layout reason=startup monitors=1`,
   `cursor x=1 y=1 corner=none` (verbose only), `e2e start ... quns=2`.
 - UI text lives only in `Strings.cs`; Chinese is chosen by system language with
