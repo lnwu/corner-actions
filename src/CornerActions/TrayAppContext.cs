@@ -17,6 +17,13 @@ internal sealed class TrayAppContext : ApplicationContext
     private const int PollIntervalMs = 50;
 
     private const int SessionCheckIntervalMs = 250;
+
+    /// <summary>
+    /// While the session is locked, presenting, or an exclusive full-screen app is
+    /// in front, the feature cannot fire anyway, so the poll slows to 1 Hz. That
+    /// keeps a full-screen game from being woken 20 times a second by a tray app.
+    /// </summary>
+    private const int SuppressedPollIntervalMs = 1000;
     private const int LayoutRetryIntervalMs = 2000;
     private const int CursorErrorLogIntervalMs = 60_000;
 
@@ -143,7 +150,14 @@ internal sealed class TrayAppContext : ApplicationContext
         if (now - _lastSessionCheckMs >= SessionCheckIntervalMs)
         {
             _lastSessionCheckMs = now;
-            _sessionSuppressed = SessionState.ShouldSkipAction();
+
+            var suppressed = SessionState.ShouldSkipAction();
+            if (suppressed != _sessionSuppressed)
+            {
+                _sessionSuppressed = suppressed;
+                _timer.Interval = suppressed ? SuppressedPollIntervalMs : PollIntervalMs;
+                Log.Info($"session suppressed={suppressed} pollMs={_timer.Interval}");
+            }
         }
 
         var mouseDown = SessionState.AnyMouseButtonDown();

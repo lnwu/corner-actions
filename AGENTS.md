@@ -59,7 +59,9 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 1. `TrayAppContext` runs a 50 ms `System.Windows.Forms.Timer`. Each tick: return if
    disabled; rebuild the monitor cache if a display change was signalled or the
    cache is empty; refresh the session guard at most every 250 ms; reset the
-   detector and return when suppressed or a mouse button is down.
+   detector and return when suppressed or a mouse button is down. When the guard
+   starts suppressing (locked, presentation, exclusive full screen) the interval
+   drops to 1 s and returns to 50 ms when it stops.
 2. `GetCursorPos` supplies the pointer position. A failure (locked desktop, no
    input desktop) skips the tick; it is logged at most once a minute.
 3. `CornerDetector.Evaluate` runs the state machine: enter → dwell → fire once →
@@ -100,6 +102,9 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 - Do not add configuration keys for timing internals. Poll interval, cooldown and
   hysteresis are fixed on purpose; a user cannot reason about them and the wrong
   value produces "it fires twice" bugs.
+- The poll interval is 50 ms only while the feature can actually fire. Suppressed
+  sessions drop to 1 s: a tray app waking a full-screen game 20 times a second is
+  exactly the kind of thing users blame for lost frames.
 
 ## Settings
 

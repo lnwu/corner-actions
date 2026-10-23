@@ -58,6 +58,8 @@ are fixed on purpose.
   resting the pointer on the Start button also turns the display off.
 - With several monitors, only the primary one has hot corners unless `monitors`
   is `all`.
+- Idle cost is about 0.2% of one core. While a full-screen game or the lock
+  screen is in front, polling drops to once a second.
 - Log: `%LOCALAPPDATA%\CornerActions\corner-actions.log`.
 
 ## 🗑️ Uninstall
