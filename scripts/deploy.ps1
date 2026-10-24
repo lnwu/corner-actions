@@ -11,6 +11,10 @@
     Windows" registry entry stay valid across updates. Updating the app is this
     script again; there is no installer and no updater.
 
+    Because the path never changes, the shell's icon cache would keep showing the
+    previous artwork on the shortcut. The script tells the shell that the
+    executable's icon changed, so a new icon appears without clearing the cache.
+
 .PARAMETER Source
     Published executable to install. Defaults to dist\CornerActions.exe in the
     repository this script belongs to.
@@ -61,6 +65,23 @@ $shortcut.IconLocation = "$exePath,0"
 $shortcut.Description = "Corner Actions"
 $shortcut.Save()
 Write-Host "Shortcut: $shortcutPath"
+
+Add-Type -Namespace CornerActions -Name Shell -MemberDefinition @'
+[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+public static extern int Shell_GetCachedImageIndexW(string iconPath, int iconIndex, uint flags);
+[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+public static extern void SHUpdateImageW(string hashItem, int index, uint flags, int imageIndex);
+[DllImport("shell32.dll")]
+public static extern void SHChangeNotify(int eventId, uint flags, IntPtr item1, IntPtr item2);
+'@
+
+# SHUpdateImage marks the cached entry stale; SHCNE_ASSOCCHANGED redraws every view.
+$imageIndex = [CornerActions.Shell]::Shell_GetCachedImageIndexW($exePath, 0, 0)
+if ($imageIndex -ge 0) {
+    [CornerActions.Shell]::SHUpdateImageW($exePath, 0, 0, $imageIndex)
+}
+[CornerActions.Shell]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
+Write-Host "Icon cache refreshed."
 
 if ($Restart) {
     Start-Process -FilePath $exePath

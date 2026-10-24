@@ -24,7 +24,9 @@ then `--selftest` on `windows-latest`, for pushes to `main` and for pull request
 `scripts\deploy.ps1` installs the result to
 `%LOCALAPPDATA%\Programs\CornerActions` and refreshes the desktop shortcut. It
 stops the running instance first, because Windows locks a running executable; add
-`-Restart` to start it again afterwards.
+`-Restart` to start it again afterwards. It also tells the shell that the exe's
+icon changed (`SHUpdateImage`), because the icon cache is keyed by path and would
+otherwise keep the old artwork on the shortcut.
 
 `scripts\make-icon.ps1` regenerates `assets/app.ico`. The file is committed, so
 this only runs when the artwork changes. Frames up to 128 px are DIBs because
@@ -53,7 +55,7 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 | `MessageWindow.cs` | Hidden window for `TaskbarCreated` and the second-copy notice |
 | `SelfTest.cs` | Assertions over `CornerDetector`, `Strings`, `AppIcon`, `TrayMenu` |
 | `E2ERunner.cs` | Dry-run drive of the real app with a parked pointer |
-| `scripts/deploy.ps1` | Installs the published exe and refreshes the desktop shortcut |
+| `scripts/deploy.ps1` | Installs the published exe, refreshes the desktop shortcut and its cached icon |
 | `scripts/make-icon.ps1` | Regenerates `assets/app.ico` |
 | `assets/app.ico` | The one copy of the artwork: exe icon and tray icon |
 
