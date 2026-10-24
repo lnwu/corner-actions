@@ -50,7 +50,7 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 | `Strings.cs` | English and Simplified Chinese UI text |
 | `Log.cs` | English, size-capped file log that never throws |
 | `AutoStart.cs` | `HKCU\...\Run` entry |
-| `MessageWindow.cs` | Hidden window for `TaskbarCreated` |
+| `MessageWindow.cs` | Hidden window for `TaskbarCreated` and the second-copy notice |
 | `SelfTest.cs` | Assertions over `CornerDetector`, `Strings`, `AppIcon`, `TrayMenu` |
 | `E2ERunner.cs` | Dry-run drive of the real app with a parked pointer |
 | `scripts/deploy.ps1` | Installs the published exe and refreshes the desktop shortcut |

@@ -76,6 +76,7 @@ internal sealed class TrayAppContext : ApplicationContext
 
         _messageWindow = new MessageWindow();
         _messageWindow.TaskbarCreated += OnTaskbarCreated;
+        _messageWindow.AlreadyRunning += OnAlreadyRunning;
 
         SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
 
@@ -110,6 +111,7 @@ internal sealed class TrayAppContext : ApplicationContext
 
             SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
             _messageWindow.TaskbarCreated -= OnTaskbarCreated;
+            _messageWindow.AlreadyRunning -= OnAlreadyRunning;
             _messageWindow.Dispose();
 
             _icon.Visible = false;
@@ -231,6 +233,14 @@ internal sealed class TrayAppContext : ApplicationContext
         _icon.Visible = false;
         _icon.Visible = true;
         RebuildLayout("taskbar-created");
+    }
+
+    private void OnAlreadyRunning()
+    {
+        // Starting the app again from the desktop shortcut otherwise looks like
+        // nothing happened; point the user at the icon that is already there.
+        Log.Info("second instance signalled");
+        _icon.ShowBalloonTip(5000, _strings.AppName, _strings.AlreadyRunning, ToolTipIcon.Info);
     }
 
     private void OnDisplaySettingsChanged(object? sender, EventArgs e)
