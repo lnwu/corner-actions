@@ -19,7 +19,6 @@ internal static class NativeMethods
     internal const uint MF_STRING = 0x0000;
     internal const uint MF_SEPARATOR = 0x0800;
     internal const uint MF_CHECKED = 0x0008;
-    internal const uint MF_GRAYED = 0x0001;
 
     internal const uint TPM_RIGHTBUTTON = 0x0002;
     internal const uint TPM_NONOTIFY = 0x0080;
