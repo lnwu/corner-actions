@@ -45,7 +45,7 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 | `CornerDetector.cs` | Pure dwell / hysteresis / cooldown state machine |
 | `MonitorLayout.cs` | `EnumDisplayMonitors` enumeration, scope filter, DPI scaling |
 | `SessionState.cs` | Locked / full-screen / presentation guard, mouse-button guard |
-| `DisplayPower.cs` | `WM_SYSCOMMAND` + `SC_MONITORPOWER` broadcast |
+| `DisplayPower.cs` | `WM_SYSCOMMAND` + `SC_MONITORPOWER` to the app's own window |
 | `AppConfig.cs` | JSON settings, clamping, atomic save |
 | `Strings.cs` | English and Simplified Chinese UI text |
 | `Log.cs` | English, size-capped file log that never throws |
@@ -69,8 +69,9 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
    input desktop) skips the tick; it is logged at most once a minute.
 3. `CornerDetector.Evaluate` runs the state machine: enter → dwell → fire once →
    latch until the pointer leaves the corner by 4 px, with a 2 s cooldown.
-4. `Fire` broadcasts `WM_SYSCOMMAND` with `SC_MONITORPOWER` and `lParam = 2`
-   (`--dry-run` logs instead), then writes one log line and raises `Triggered`.
+4. `Fire` sends `WM_SYSCOMMAND` with `SC_MONITORPOWER` and `lParam = 2` to the
+   hidden `MessageWindow` (`--dry-run` logs instead), then writes one log line
+   and raises `Triggered`.
 5. `TaskbarCreated` (also sent when the primary display DPI changes) rebuilds the
    cache and re-adds the tray icon; `DisplaySettingsChanged` schedules the same
    rebuild for the next tick.
@@ -92,8 +93,9 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
   also covers ordinary full-screen windows, and a full-screen terminal or video
   player is where a user actually reaches for the corner. Decided after a live
   test with a full-screen Windows Terminal.
-- The action is one broadcast of `SC_MONITORPOWER=2` with a 1 s timeout. Log a
-  failure and move on; never retry in a loop.
+- The action is one `SC_MONITORPOWER=2` sent to the app's own hidden window,
+  never `HWND_BROADCAST`: a broadcast reaches every app on the desktop and waits
+  on each of them. Log a failure and move on; never retry in a loop.
 - Logging must never throw into the caller, and must stay in English.
 - Log lines are `{utc} {LEVEL} key=value ...` with lowercase keys; free text is
   quoted and only used where a key cannot carry the meaning:
