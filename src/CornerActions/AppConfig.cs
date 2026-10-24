@@ -55,8 +55,8 @@ internal sealed class AppConfig
 
     /// <summary>
     /// True when these are stand-in defaults for a file that could not be read.
-    /// <see cref="Save"/> then refuses to write, so a menu click cannot replace the
-    /// user's half-edited file with defaults.
+    /// <see cref="Save"/> then refuses to write while that file still exists, so a
+    /// menu click cannot replace the user's half-edited file with defaults.
     /// </summary>
     [JsonIgnore]
     internal bool LoadFailed { get; private init; }
@@ -91,7 +91,7 @@ internal sealed class AppConfig
 
     internal void Save()
     {
-        if (LoadFailed)
+        if (LoadFailed && File.Exists(FilePath))
         {
             Log.Warn($"config save skipped reason=load-failed path=\"{FilePath}\"");
             return;
