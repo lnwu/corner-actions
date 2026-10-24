@@ -211,7 +211,7 @@ internal sealed class TrayAppContext : ApplicationContext
         {
             Log.Info($"trigger corner={Describe(corner)} action=monitor-off mode=dry-run");
         }
-        else if (DisplayPower.TryTurnOff(out var errorCode))
+        else if (DisplayPower.TryTurnOff(_messageWindow.Handle, out var errorCode))
         {
             Log.Info($"trigger corner={Describe(corner)} action=monitor-off result=ok");
         }

@@ -4,21 +4,22 @@ namespace CornerActions;
 
 /// <summary>
 /// Turns the display off. This is the documented way to run the system menu's
-/// "turn off display" command: SC_MONITORPOWER with lParam 2, delivered to every
-/// top-level window so that DefWindowProc performs it.
+/// "turn off display" command: SC_MONITORPOWER with lParam 2, handled by
+/// DefWindowProc. It goes to the app's own hidden window, not HWND_BROADCAST, so
+/// no other application receives the command and a slow one cannot stall us.
 /// </summary>
 internal static class DisplayPower
 {
     private const uint TimeoutMilliseconds = 1000;
 
     /// <summary>
-    /// Broadcasts the command. Returns false when no window accepted it within the
-    /// timeout; the caller logs that instead of retrying in a loop.
+    /// Sends the command to <paramref name="window"/>. Returns false when the call
+    /// failed; the caller logs that instead of retrying in a loop.
     /// </summary>
-    internal static bool TryTurnOff(out int errorCode)
+    internal static bool TryTurnOff(IntPtr window, out int errorCode)
     {
         var result = NativeMethods.SendMessageTimeout(
-            NativeMethods.HWND_BROADCAST,
+            window,
             NativeMethods.WM_SYSCOMMAND,
             new IntPtr(NativeMethods.SC_MONITORPOWER),
             new IntPtr(2),

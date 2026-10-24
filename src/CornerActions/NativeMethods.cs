@@ -11,9 +11,6 @@ internal static class NativeMethods
     internal const int WM_SYSCOMMAND = 0x0112;
     internal const int SC_MONITORPOWER = 0xF170;
 
-    /// <summary>Send WM_SYSCOMMAND to every top-level window; DefWindowProc handles it.</summary>
-    internal static readonly IntPtr HWND_BROADCAST = new(0xFFFF);
-
     internal const uint SMTO_ABORTIFHUNG = 0x0002;
 
     internal const uint MF_STRING = 0x0000;
