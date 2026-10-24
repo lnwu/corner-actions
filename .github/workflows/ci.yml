@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Build
+        run: dotnet build src/CornerActions/CornerActions.csproj -c Release -warnaserror
+
+      # A WinExe does not block the shell, so wait for it explicitly and pass its
+      # exit code on; the checks print through the attached console.
+      - name: Self-test
+        shell: pwsh
+        run: |
+          $exe = "src/CornerActions/bin/Release/net10.0-windows/win-x64/CornerActions.exe"
+          $process = Start-Process -FilePath $exe -ArgumentList "--selftest" -NoNewWindow -Wait -PassThru
+          exit $process.ExitCode
