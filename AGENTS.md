@@ -18,6 +18,9 @@ dotnet publish src/CornerActions/CornerActions.csproj -c Release -o dist   # ~54
 On Windows, `.\build.ps1` does the same and `.\build.ps1 -SelfContained` bundles
 the runtime (~47 MB, extracted to `%TEMP%\.net` on first launch).
 
+CI (`.github/workflows/ci.yml`) runs the Release build with `-warnaserror` and
+then `--selftest` on `windows-latest`, for pushes to `main` and for pull requests.
+
 `scripts\deploy.ps1` installs the result to
 `%LOCALAPPDATA%\Programs\CornerActions` and refreshes the desktop shortcut. It
 stops the running instance first, because Windows locks a running executable; add
