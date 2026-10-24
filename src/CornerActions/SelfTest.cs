@@ -89,32 +89,65 @@ internal static class SelfTest
         Check("top-right inside", detector.Evaluate(primary, true, true, 1919, 0, 0) == HotCorner.None);
         Check("top-right fires", detector.Evaluate(primary, true, true, 1919, 0, 300) == HotCorner.TopRight);
 
-        // Multi-monitor scope.
+        // Multi-monitor scope. The second display is taller and bottom-aligned, so
+        // its top-left corner sits above the primary one and is an outer corner.
         MonitorInfo[] all =
         [
             Monitor(0, 0, 1920, 1080),
-            Monitor(1920, 0, 2560, 1440, dpi: 144, primary: false),
+            Monitor(1920, -360, 2560, 1440, dpi: 144, primary: false),
         ];
 
         var primaryOnly = MonitorLayout.Select(all, MonitorScope.Primary);
         detector = NewDetector();
         Check("primary scope has one monitor", primaryOnly.Count == 1);
         Check("primary scope ignores the second monitor corner",
-            detector.Evaluate(primaryOnly, true, true, 1921, 1, 5000) == HotCorner.None);
+            detector.Evaluate(primaryOnly, true, true, 1921, -359, 5000) == HotCorner.None);
 
         var everyMonitor = MonitorLayout.Select(all, MonitorScope.All);
         detector = NewDetector();
         Check("all scope has two monitors", everyMonitor.Count == 2);
-        Check("all scope entry", detector.Evaluate(everyMonitor, true, true, 1921, 1, 0) == HotCorner.None);
-        Check("all scope fires", detector.Evaluate(everyMonitor, true, true, 1921, 1, 300) == HotCorner.TopLeft);
+        Check("all scope entry", detector.Evaluate(everyMonitor, true, true, 1921, -359, 0) == HotCorner.None);
+        Check("all scope fires", detector.Evaluate(everyMonitor, true, true, 1921, -359, 300) == HotCorner.TopLeft);
 
         // 4 DIP at 150% scaling is 6 physical pixels.
         detector = NewDetector();
-        Check("150% zone includes 5 px", detector.Evaluate(everyMonitor, true, true, 1925, 1, 0) == HotCorner.None);
-        Check("150% zone fires", detector.Evaluate(everyMonitor, true, true, 1925, 1, 300) == HotCorner.TopLeft);
+        Check("150% zone includes 5 px", detector.Evaluate(everyMonitor, true, true, 1925, -359, 0) == HotCorner.None);
+        Check("150% zone fires", detector.Evaluate(everyMonitor, true, true, 1925, -359, 300) == HotCorner.TopLeft);
 
         detector = NewDetector();
-        Check("150% zone excludes 6 px", detector.Evaluate(everyMonitor, true, true, 1926, 1, 5000) == HotCorner.None);
+        Check("150% zone excludes 6 px", detector.Evaluate(everyMonitor, true, true, 1926, -359, 5000) == HotCorner.None);
+
+        // Side by side with aligned tops: the pointer slides from one display into
+        // the other across the inner corners, so only the outer two are hot.
+        MonitorInfo[] sideBySide =
+        [
+            Monitor(0, 0, 1920, 1080),
+            Monitor(1920, 0, 1920, 1080, primary: false),
+        ];
+
+        var aligned = MonitorLayout.Select(sideBySide, MonitorScope.All);
+        detector = NewDetector();
+        detector.Evaluate(aligned, true, true, 1919, 0, 0);
+        Check("shared top-right stays quiet", detector.Evaluate(aligned, true, true, 1919, 0, 5000) == HotCorner.None);
+
+        detector = NewDetector();
+        detector.Evaluate(aligned, true, true, 1920, 0, 0);
+        Check("shared top-left stays quiet", detector.Evaluate(aligned, true, true, 1920, 0, 5000) == HotCorner.None);
+
+        detector = NewDetector();
+        detector.Evaluate(aligned, true, true, 0, 0, 0);
+        Check("outer top-left still fires", detector.Evaluate(aligned, true, true, 0, 0, 300) == HotCorner.TopLeft);
+
+        detector = NewDetector();
+        detector.Evaluate(aligned, true, true, 3839, 0, 0);
+        Check("outer top-right still fires", detector.Evaluate(aligned, true, true, 3839, 0, 300) == HotCorner.TopRight);
+
+        // The primary scope has no other top-right corner, so it keeps the shared one.
+        var alignedPrimary = MonitorLayout.Select(sideBySide, MonitorScope.Primary);
+        detector = NewDetector();
+        detector.Evaluate(alignedPrimary, true, true, 1919, 0, 0);
+        Check("primary scope keeps a shared corner",
+            detector.Evaluate(alignedPrimary, true, true, 1919, 0, 300) == HotCorner.TopRight);
 
         // Negative coordinates, as used by a monitor placed left of the primary one.
         MonitorInfo[] leftOfPrimary = [Monitor(-1920, 0, 1920, 1080, primary: false)];

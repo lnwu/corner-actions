@@ -43,7 +43,7 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 | `TrayAppContext.cs` | Tray icon, 50 ms polling loop, monitor cache, session guards |
 | `TrayMenu.cs` | Win32 popup menu: builds the `HMENU` and runs `TrackPopupMenuEx` |
 | `CornerDetector.cs` | Pure dwell / hysteresis / cooldown state machine |
-| `MonitorLayout.cs` | `EnumDisplayMonitors` enumeration, scope filter, DPI scaling |
+| `MonitorLayout.cs` | `EnumDisplayMonitors` enumeration, scope filter, shared corners, DPI scaling |
 | `SessionState.cs` | Locked / full-screen / presentation guard, mouse-button guard |
 | `DisplayPower.cs` | `WM_SYSCOMMAND` + `SC_MONITORPOWER` to the app's own window |
 | `AppConfig.cs` | JSON settings, clamping, atomic save |
