@@ -60,7 +60,7 @@ internal static class E2ERunner
         return triggers == 1 ? 0 : 1;
     }
 
-    private static int Fail(string reason)
+    internal static int Fail(string reason)
     {
         var message = $"e2e FAIL reason=\"{reason}\"";
         Log.Error(message);

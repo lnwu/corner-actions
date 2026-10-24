@@ -137,6 +137,9 @@ for that run, and only rewritten when the next setting changes.
 | `--dry-run` | Shows a tray icon, logs only | Manual checks; never switches the display off |
 | `--e2e` | **Moves the real pointer for ~2.5 s** | Ask the human before running it on their machine |
 
+`--e2e` fails at once, without moving the pointer, when another copy of the app
+is running: exit the installed copy first.
+
 `--e2e` also fails when the session reports `QUNS_NOT_PRESENT`,
 `QUNS_PRESENTATION_MODE` or `QUNS_RUNNING_D3D_FULL_SCREEN`, because the app
 suppresses actions there. Read the log line `e2e start ... quns=N` before blaming

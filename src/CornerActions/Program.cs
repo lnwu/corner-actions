@@ -27,6 +27,13 @@ internal static class Program
         using var singleInstance = new SingleInstance();
         if (!singleInstance.IsFirst)
         {
+            // The test needs its own tray app; exiting with 0 here would report a
+            // pass without having run anything.
+            if (options.EndToEnd)
+            {
+                return E2ERunner.Fail("another copy is running; exit it first");
+            }
+
             MessageWindow.NotifyRunningInstance();
             Log.Info("second instance exited");
             return 0;
