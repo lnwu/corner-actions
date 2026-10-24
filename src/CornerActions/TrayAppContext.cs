@@ -79,12 +79,11 @@ internal sealed class TrayAppContext : ApplicationContext
 
         SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
 
-        RebuildLayout("startup");
-        UpdateTooltip();
-
         _timer = new System.Windows.Forms.Timer { Interval = PollIntervalMs };
         _timer.Tick += OnTick;
-        _timer.Start();
+
+        RebuildLayout("startup");
+        ApplyEnabled();
 
         Log.Info(
             $"started enabled={_config.Enabled} scope={_config.Monitors} " +
@@ -125,11 +124,6 @@ internal sealed class TrayAppContext : ApplicationContext
 
     private void OnTick(object? sender, EventArgs e)
     {
-        if (!_config.Enabled)
-        {
-            return;
-        }
-
         if (_layoutDirty)
         {
             RebuildLayout("display-changed");
@@ -264,13 +258,18 @@ internal sealed class TrayAppContext : ApplicationContext
         _config.Enabled = !_config.Enabled;
         _config.Save();
         _detector.Reset();
-        UpdateTooltip();
+        ApplyEnabled();
         Log.Info($"toggled enabled={_config.Enabled}");
     }
 
-    private void UpdateTooltip()
+    /// <summary>
+    /// Shows the enabled state in the tooltip and stops polling while disabled, so
+    /// a switched-off app costs no timer ticks at all.
+    /// </summary>
+    private void ApplyEnabled()
     {
         _icon.Text = _config.Enabled ? _strings.TooltipEnabled : _strings.TooltipDisabled;
+        _timer.Enabled = _config.Enabled;
     }
 
     private void OnIconMouseUp(object? sender, MouseEventArgs e)
@@ -336,7 +335,7 @@ internal sealed class TrayAppContext : ApplicationContext
         _strings = new Strings(_config);
         _detector = CreateDetector(_config);
         RebuildLayout("config-reload");
-        UpdateTooltip();
+        ApplyEnabled();
         Log.Info($"config reloaded enabled={_config.Enabled} language={_config.Language}");
     }
 

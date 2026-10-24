@@ -56,12 +56,12 @@ System.Drawing on .NET Framework renders PNG-compressed frames as garbage; the
 
 ## How the feature works
 
-1. `TrayAppContext` runs a 50 ms `System.Windows.Forms.Timer`. Each tick: return if
-   disabled; rebuild the monitor cache if a display change was signalled or the
-   cache is empty; refresh the session guard at most every 250 ms; reset the
-   detector and return when suppressed or a mouse button is down. When the guard
-   starts suppressing (locked, presentation, exclusive full screen) the interval
-   drops to 1 s and returns to 50 ms when it stops.
+1. `TrayAppContext` runs a 50 ms `System.Windows.Forms.Timer`, stopped while the
+   app is disabled. Each tick: rebuild the monitor cache if a display change was
+   signalled or the cache is empty; refresh the session guard at most every
+   250 ms; reset the detector and return when suppressed or a mouse button is
+   down. When the guard starts suppressing (locked, presentation, exclusive full
+   screen) the interval drops to 1 s and returns to 50 ms when it stops.
 2. `GetCursorPos` supplies the pointer position. A failure (locked desktop, no
    input desktop) skips the tick; it is logged at most once a minute.
 3. `CornerDetector.Evaluate` runs the state machine: enter → dwell → fire once →
