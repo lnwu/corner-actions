@@ -123,19 +123,19 @@ internal sealed class CornerDetector
     {
         foreach (var monitor in monitors)
         {
-            if (x < monitor.Left || x >= monitor.Right || y < monitor.Top || y >= monitor.Bottom)
+            if (!monitor.Contains(x, y))
             {
                 continue;
             }
 
             var size = MonitorLayout.CornerSizePx(monitor, _cornerSizeDips) + marginPx;
 
-            if (topLeftEnabled && x < monitor.Left + size && y < monitor.Top + size)
+            if (topLeftEnabled && monitor.TopLeftHot && x < monitor.Left + size && y < monitor.Top + size)
             {
                 return HotCorner.TopLeft;
             }
 
-            if (topRightEnabled && x >= monitor.Right - size && y < monitor.Top + size)
+            if (topRightEnabled && monitor.TopRightHot && x >= monitor.Right - size && y < monitor.Top + size)
             {
                 return HotCorner.TopRight;
             }

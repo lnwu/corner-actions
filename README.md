@@ -57,7 +57,9 @@ are fixed on purpose.
 - Detection is positional, not window-aware: with the taskbar at the top,
   resting the pointer on the Start button also turns the display off.
 - With several monitors, only the primary one has hot corners unless `monitors`
-  is `all`.
+  is `all`. With `all`, a top corner that touches another monitor is skipped,
+  because the pointer slides across it; with `primary`, such a corner still
+  works but is easy to overshoot.
 - Idle cost is about 0.2% of one core. While a full-screen game or the lock
   screen is in front, polling drops to once a second.
 - Log: `%LOCALAPPDATA%\CornerActions\corner-actions.log`.
