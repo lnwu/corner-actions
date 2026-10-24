@@ -54,6 +54,14 @@ internal sealed class AppConfig
         "config.json");
 
     /// <summary>
+    /// True when these are stand-in defaults for a file that could not be read.
+    /// <see cref="Save"/> then refuses to write, so a menu click cannot replace the
+    /// user's half-edited file with defaults.
+    /// </summary>
+    [JsonIgnore]
+    internal bool LoadFailed { get; private init; }
+
+    /// <summary>
     /// Loads the configuration. A missing file is created with defaults; a file
     /// that cannot be parsed is reported and left untouched, and defaults are
     /// used for this run so the app still starts.
@@ -77,12 +85,18 @@ internal sealed class AppConfig
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
             Log.Error($"config load failed path=\"{FilePath}\" error=\"{ex.GetType().Name}: {ex.Message}\"");
-            return new AppConfig();
+            return new AppConfig { LoadFailed = true };
         }
     }
 
     internal void Save()
     {
+        if (LoadFailed)
+        {
+            Log.Warn($"config save skipped reason=load-failed path=\"{FilePath}\"");
+            return;
+        }
+
         try
         {
             var directory = Path.GetDirectoryName(FilePath);

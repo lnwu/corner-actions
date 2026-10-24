@@ -325,7 +325,14 @@ internal sealed class TrayAppContext : ApplicationContext
 
     private void ReloadConfig()
     {
-        _config = AppConfig.Load();
+        var reloaded = AppConfig.Load();
+        if (reloaded.LoadFailed)
+        {
+            MessageBox.Show(_strings.ConfigInvalid, _strings.AppName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        _config = reloaded;
         _strings = new Strings(_config);
         _detector = CreateDetector(_config);
         RebuildLayout("config-reload");

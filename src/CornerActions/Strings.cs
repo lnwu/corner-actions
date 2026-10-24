@@ -50,6 +50,10 @@ internal sealed class Strings
         "The configuration file could not be opened. See the log for details.",
         "无法打开配置文件，详情见日志。");
 
+    internal string ConfigInvalid => T(
+        "The configuration file could not be read, so the current settings stay in effect. See the log for details.",
+        "无法读取配置文件，当前设置保持不变。详情见日志。");
+
     /// <summary>Chinese (Simplified, Traditional, Hong Kong, Singapore).</summary>
     internal static bool IsChineseUiLanguage(uint languageId) => (languageId & 0x3FF) == 0x04;
 
