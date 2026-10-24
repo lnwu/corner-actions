@@ -1,9 +1,10 @@
 namespace CornerActions;
 
 /// <summary>
-/// The application mark: a light card with blue wedges in the top corners. Both
-/// the executable icon and the tray icon come from <c>assets/app.ico</c>, which is
-/// embedded at build time, so there is exactly one copy of the artwork.
+/// The application mark: a night-sky tile with amber brackets in the top corners
+/// and a crescent moon, the display going to sleep. Both the executable icon and
+/// the tray icon come from <c>assets/app.ico</c>, which is embedded at build time,
+/// so there is exactly one copy of the artwork.
 /// </summary>
 internal static class AppIcon
 {
