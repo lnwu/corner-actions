@@ -50,6 +50,10 @@ internal sealed class Strings
         "The configuration file could not be opened. See the log for details.",
         "无法打开配置文件，详情见日志。");
 
+    internal string AlreadyRunning => T(
+        "Corner Actions is already running. Right-click this icon for its settings.",
+        "角落动作已在运行。右键点击此图标可打开设置。");
+
     internal string ConfigInvalid => T(
         "The configuration file could not be read, so the current settings stay in effect. See the log for details.",
         "无法读取配置文件，当前设置保持不变。详情见日志。");

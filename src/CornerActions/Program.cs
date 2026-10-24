@@ -27,6 +27,7 @@ internal static class Program
         using var singleInstance = new SingleInstance();
         if (!singleInstance.IsFirst)
         {
+            MessageWindow.NotifyRunningInstance();
             Log.Info("second instance exited");
             return 0;
         }
